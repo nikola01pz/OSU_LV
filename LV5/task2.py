@@ -4,6 +4,11 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
 from sklearn.model_selection import train_test_split
 
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import ConfusionMatrixDisplay
+from sklearn.metrics import classification_report
+
 labels= {0:'Adelie', 1:'Chinstrap', 2:'Gentoo'}
 
 def plot_decision_regions(X, y, classifier, resolution=0.02):
@@ -35,7 +40,7 @@ def plot_decision_regions(X, y, classifier, resolution=0.02):
                     label=labels[cl])
 
 # load data
-df = pd.read_csv("penguins.csv")
+df = pd.read_csv("lv5/penguins.csv")
 
 # missing column values
 print(df.isnull().sum())
@@ -66,3 +71,19 @@ y = df[output_variable].to_numpy()
 # train/test
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 123)
 
+logReg_model = LogisticRegression()
+logReg_model.fit(X_train, y_train)
+
+print("Coefficients:", logReg_model.coef_)
+print("Intersection point: ", logReg_model.intercept_)
+
+plot_decision_regions(X_test, y_test, logReg_model)
+
+y_test_p = logReg_model.predict(X_test)
+confusionMatrix = confusion_matrix(y_test, y_test_p)
+print("Confusion Matrix: ", confusionMatrix)
+display = ConfusionMatrixDisplay(confusion_matrix(y_test, y_test_p))
+display.plot()
+plt.show()
+
+print(classification_report(y_test, y_test_p))
