@@ -20,6 +20,7 @@ input_variables = ["Fuel Consumption City (L/100km)",
                    "Fuel Type"]
 
 ohe = OneHotEncoder()
+# konvertiranje kategoričke veličine 
 X_encoded = ohe.fit_transform(data[["Fuel Type"]]).toarray()
 data["Fuel Type"] = X_encoded
 

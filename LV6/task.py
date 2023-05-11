@@ -2,19 +2,13 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
-
+from sklearn import svm
 from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn import svm
-
 from sklearn.metrics import accuracy_score
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.preprocessing import StandardScaler
-from sklearn.pipeline import Pipeline
-from sklearn.pipeline import make_pipeline
-from sklearn.model_selection import GridSearchCV
-from sklearn . neighbors import KNeighborsClassifier
-from sklearn import svm
+from sklearn.pipeline import Pipeline, make_pipeline
 
 def plot_decision_regions(X, y, classifier, resolution=0.02):
     plt.figure()
@@ -45,7 +39,7 @@ def plot_decision_regions(X, y, classifier, resolution=0.02):
 
 
 # load data
-data = pd.read_csv("Social_Network_Ads.csv")
+data = pd.read_csv("lv6/Social_Network_Ads.csv")
 print(data.info())
 
 data.hist()
@@ -64,23 +58,23 @@ X_train_n = sc.fit_transform(X_train)
 X_test_n = sc.transform((X_test))
 
 # logistic regression model
-LogReg_model = LogisticRegression(penalty=None) 
-LogReg_model.fit(X_train_n, y_train)
+logisticRegression_model = LogisticRegression(penalty=None) 
+logisticRegression_model.fit(X_train_n, y_train)
 
 # evaluation
-y_train_p = LogReg_model.predict(X_train_n)
-y_test_p = LogReg_model.predict(X_test_n)
+y_train_p = logisticRegression_model.predict(X_train_n)
+y_test_p = logisticRegression_model.predict(X_test_n)
 
 print("Logistic Regression: ")
 print("train accuracy: " + "{:0.3f}".format((accuracy_score(y_train, y_train_p))))
 print("test accuracy: " + "{:0.3f}".format((accuracy_score(y_test, y_test_p))))
 
 # decision border using logistic regresion
-plot_decision_regions(X_train_n, y_train, classifier=LogReg_model)
+plot_decision_regions(X_train_n, y_train, classifier=logisticRegression_model)
 plt.xlabel('x_1')
 plt.ylabel('x_2')
 plt.legend(loc='upper left')
-plt.title("Tocnost: " + "{:0.3f}".format((accuracy_score(y_train, y_train_p))))
+plt.title("logReg accuracy: " + "{:0.3f}".format((accuracy_score(y_train, y_train_p))))
 plt.tight_layout()
 plt.show()
 
@@ -96,7 +90,7 @@ plot_decision_regions(X_train_n, y_train, classifier=KNN_model)
 plt.xlabel('x_1')
 plt.ylabel('x_2')
 plt.legend(loc='upper left')
-plt.title("Accuracy: " + "{:0.3f}".format((accuracy_score(y_train, y_train_p_KNN))))
+plt.title("KNN accuracy: " + "{:0.3f}".format((accuracy_score(y_train, y_train_p_KNN))))
 plt.tight_layout()
 plt.show()
 
@@ -105,14 +99,15 @@ print("train accuracy: " + "{:0.3f}".format((accuracy_score(y_train, y_train_p_K
 print("test accuracy: " + "{:0.3f}".format((accuracy_score(y_test, y_test_p_KNN))))
 # border using KNN isn't linear compared to linear regression
 # when K=1, it is overfitting
-# when K = 100, it is underfitting
+# when K=100, it is underfitting
 
 # task2
 KNN_model2 = KNeighborsClassifier()
 param_grid = {"n_neighbors": np.arange(1, 100)}
+# cv parameter specifies the number of folds to be used in cross-validation
 knn_gs = GridSearchCV(KNN_model2, param_grid, cv = 5 )
 knn_gs.fit(X_train_n, y_train )
-print (knn_gs.best_params_)
+print ("Best KNN parametars are:",knn_gs.best_params_)
 
 # SVM
 # task3
@@ -125,8 +120,7 @@ plot_decision_regions(X_train_n, y_train, classifier=SVM_model)
 plt.xlabel('x_1')
 plt.ylabel('x_2')
 plt.legend(loc='upper left')
-plt.title("Accuracy: " + "{:0.3f}".format((accuracy_score(y_train, y_train_p_SVM))))
-plt.tight_layout()
+plt.title("SVM accuracy: " + "{:0.3f}".format((accuracy_score(y_train, y_train_p_SVM))))
 plt.show()
 
 print("\nSVM:")
@@ -140,5 +134,5 @@ SVM_model2 = svm.SVC(kernel ="rbf", gamma = 1, C=0.1 )
 param_grid = {"C": [10 , 100 , 100 ], "gamma": [10 , 1 , 0.1 , 0.01 ]}
 svm_gscv = GridSearchCV( SVM_model2 , param_grid , cv =5 , scoring ="accuracy", n_jobs = -1 )
 svm_gscv.fit( X_train_n , y_train )
-print (svm_gscv.best_params_)
+print ("Best SVM parametars are:",svm_gscv.best_params_)
 print (svm_gscv.best_score_)

@@ -7,8 +7,10 @@ print("a) Datoteka sadrzi", len(data), "elemenata")
 print("\na) Osnovne informacije:")
 data.info()
 
-print("\na) Duplicirane vrijednosti po kategoriji:")
+print("\na) Izostale vrijednosti po kategoriji:")
 print(data.isnull().sum())
+print("\na) Duplicirane vrijednosti po kategoriji:")
+print(data.duplicated().sum())
 
 print("\na) Kategoričke veličine konvertirane u tip category:")
 columns = ['Make', 'Model', 'Vehicle Class', 'Transmission', 'Fuel Type']

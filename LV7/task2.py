@@ -3,59 +3,73 @@ import matplotlib.pyplot as plt
 import matplotlib.image as Image
 from sklearn.cluster import KMeans
 
-# ucitaj sliku
-img = Image.imread("lv7/imgs/test_1.jpg")
+for i in range(1,7):
+    # ucitaj sliku
+    img = Image.imread(f"lv7/imgs/test_{i}.jpg")
 
-# prikazi originalnu sliku
-plt.figure()
-plt.title("Originalna slika")
-plt.imshow(img)
-plt.tight_layout()
-plt.show()
+    # prikazi originalnu sliku
+    plt.figure()
+    plt.title("Originalna slika")
+    plt.imshow(img)
+    plt.tight_layout()
+    plt.show()
 
-# pretvori vrijednosti elemenata slike u raspon 0 do 1
-img = img.astype(np.float64) / 255
+    # pretvori vrijednosti elemenata slike u raspon 0 do 1
+    img = img.astype(np.float64) / 255
+    if i == 4:
+        img = img[:,:,:3]
 
-# transformiraj sliku u 2D numpy polje (jedan red su RGB komponente elementa slike)
-w,h,d = img.shape
-img_array = np.reshape(img, (w*h, d))
+    # transformiraj sliku u 2D numpy polje (jedan red su RGB komponente elementa slike)
+    w,h,d = img.shape
+    img_array = np.reshape(img, (w*h, d))
 
-# rezultatna slika
-img_array_aprox = img_array.copy()
+    # rezultatna slika
+    img_array_aprox = img_array.copy()
 
-print("Original image color count: ", len(np.unique(img_array, axis=0)))
+    print("Color count on original image:", len(np.unique(img_array_aprox, axis=0)))
 
-km = KMeans(n_clusters=4, init="random", n_init=5, random_state=0)
-km.fit(img_array_aprox)
-labels = km.predict(img_array_aprox)
+    k = [2,3,4,5,7,10]
+    sse = []
 
-centroids = km.cluster_centers_ * 255.0
-colors = centroids[labels.astype(int)]
+    for j in range(len(k)):
 
-image = colors.reshape((w, h, d)).astype(int)
+        img_array_aprox = img_array.copy()
 
-plt.figure()
-plt.imshow(image)
-plt.show()
+        km = KMeans( n_clusters = k[j], init ='random', n_init =5 , random_state = 0 )
 
-plt.figure()
-for i in range(1, 10):
-    km = KMeans(n_clusters=i, init="random", n_init=5, random_state=0)
+        km.fit(img_array_aprox)
+
+        sse.append(km.inertia_)
+
+        for z in np.unique(km.labels_):
+            img_array_aprox[km.labels_==z,:] = km.cluster_centers_[z]        
+
+        img2 = img_array_aprox.reshape(img.shape)
+
+        plt.subplot(3,2,j+1)
+        plt.title('k = ' + str(k[j]))
+        plt.imshow(img2)
+
+    plt.show()
+
+
+    plt.plot(k, sse)
+    plt.show()
+
+
+    clusters = [3,3,3,3,4,5]
+
+    img_array_aprox = img_array.copy()
+
+    km = KMeans( n_clusters = clusters[i-1], init ='random', n_init =5 , random_state = 0 )
+
     km.fit(img_array_aprox)
-    plt.plot(i, km.inertia_, ".-r", linewidth=2)
-    km.fit(img_array)
-    plt.title("The Elbow Method")
-    plt.xlabel("K")
-    plt.ylabel("J")
 
-plt.show()
-
-clusters = 4
-for i in range(clusters):
-    bit_values = labels==[i]
-    binary_img = np.reshape(bit_values, (img.shape[0:2]))
-    binary_img = binary_img*1
-    x=int(i/2)
-    y=i%2
-    plt.imshow(binary_img)
+    fig, axs = plt.subplots(nrows=1, ncols=clusters[i-1], figsize=(10,5))
+    for l, ax in zip(np.unique(km.labels_), axs):
+        layer_arr = np.zeros_like(km.labels_)
+        layer_arr[km.labels_ == l] = 1
+        layer_img = layer_arr.reshape(w, h)
+        ax.imshow(layer_img, cmap='gray', vmin=0, vmax=1)
+    plt.suptitle('the primary group is represented in white')
     plt.show()

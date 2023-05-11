@@ -14,19 +14,20 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 
 #a)
 plt.scatter(X_train[:, 0], X_train[:, 1], c=y_train, cmap='bwr', label='Train')
-plt.scatter(X_test[:, 0], X_test[:, 1], c=y_test,
-            cmap='bwr', marker='x', label='Test')
+plt.scatter(X_test[:, 0], X_test[:, 1], c=y_test, cmap='bwr', marker='x', label='Test')
 plt.legend()
+plt.title("a)")
 plt.show()
 
-#b)
-logisticRegression = LogisticRegression()
-logisticRegression.fit(X_train, y_train)
+
+#b) inicijalizacija i ucenje modela logisticke regresije
+logisticRegression_model = LogisticRegression()
+logisticRegression_model.fit(X_train, y_train)
 
 #c)
-theta0 = logisticRegression.intercept_
-theta1 = logisticRegression.coef_[0,0]
-theta2 = logisticRegression.coef_[0,1]
+theta0 = logisticRegression_model.intercept_
+theta1 = logisticRegression_model.coef_[0,0]
+theta2 = logisticRegression_model.coef_[0,1]
 
 x_min, x_max = np.min(X_train[:, 1]), np.max(X_train[:, 1])
 x2 = np.linspace(x_min, x_max, 100)
@@ -35,14 +36,17 @@ x1 = -theta0/theta1 -theta2/theta1*x2
 plt.plot(x1, x2)
 plt.fill_between(x1, x2, x_min, alpha=0.2, color='blue')
 plt.fill_between(x1, x2, x_max, alpha=0.2, color='red')
+plt.title("c)")
 plt.show()
 
-#d)
-y_test_p = logisticRegression.predict(X_test)
+#d) predikcija na skupu podataka za testiranje
+y_test_p = logisticRegression_model.predict(X_test)
+
 cm = confusion_matrix(y_test, y_test_p)
 print("Confusion Matrix: ", cm)
-disp = ConfusionMatrixDisplay(confusion_matrix(y_test, y_test_p))
-disp.plot()
+display = ConfusionMatrixDisplay(confusion_matrix(y_test, y_test_p))
+display.plot()
+plt.title("d)")
 plt.show()
 
 print("Accuracy: ", accuracy_score(y_test, y_test_p))
@@ -59,4 +63,5 @@ for i in range(len(y_test)):
 
 plt.xlabel('x1')
 plt.ylabel('x2')
+plt.title("e)")
 plt.show()

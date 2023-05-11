@@ -7,7 +7,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import ConfusionMatrixDisplay
-from sklearn.metrics import classification_report
+from sklearn.metrics import classification_report, accuracy_score
 
 labels= {0:'Adelie', 1:'Chinstrap', 2:'Gentoo'}
 
@@ -71,19 +71,57 @@ y = df[output_variable].to_numpy()
 # train/test
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 123)
 
-logReg_model = LogisticRegression()
-logReg_model.fit(X_train, y_train)
+#a)
+unique_train, unique_train_count = np.unique(y_train, return_counts=True)
+unique_test, unique_test_count = np.unique(y_test, return_counts=True)
 
-print("Coefficients:", logReg_model.coef_)
-print("Intersection point: ", logReg_model.intercept_)
+plt.bar(unique_train,unique_train_count, color="blue", label="Train data")
+plt.bar(unique_test, unique_test_count, color="red", label="Test data")
+plt.xlabel("Species")
+plt.ylabel("Number")
+plt.title("a)")
+plt.legend()
+plt.show()
 
-plot_decision_regions(X_test, y_test, logReg_model)
+#b)
+logisticRegression_model = LogisticRegression()
+logisticRegression_model.fit(X_train, y_train)
 
-y_test_p = logReg_model.predict(X_test)
+#c)
+print("Coefficients:", logisticRegression_model.coef_)
+print("Intersection point: ", logisticRegression_model.intercept_)
+
+#d)
+plot_decision_regions(X_test, y_test, classifier=logisticRegression_model)
+
+#e)
+y_test_p = logisticRegression_model.predict(X_test)
+print("Accuracy: ", accuracy_score(y_test, y_test_p))
+
 confusionMatrix = confusion_matrix(y_test, y_test_p)
-print("Confusion Matrix: ", confusionMatrix)
+print("Confusion Matrix:\n", confusionMatrix)
 display = ConfusionMatrixDisplay(confusion_matrix(y_test, y_test_p))
 display.plot()
 plt.show()
 
 print(classification_report(y_test, y_test_p))
+
+#f)
+input_variables = [ "bill_length_mm",
+                    "flipper_length_mm",
+                    "bill_depth_mm",
+                    "body_mass_g" ]
+
+X = df[input_variables].to_numpy()
+# zelimo osigurati sa [:,0] da izlazna varijabla bude 1D niz
+y = df[output_variable].to_numpy()[:,0]
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 1)
+
+logisticRegression_model2 = LogisticRegression()
+logisticRegression_model2.fit(X_train, y_train)
+
+y_pred = logisticRegression_model2.predict(X_test)
+print(classification_report(y_test, y_pred))
+
+# more input values => better classification_reports results are
