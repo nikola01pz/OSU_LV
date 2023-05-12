@@ -15,7 +15,14 @@ array = array[array[:,5]!=0.0] # brise sve vrijednosti == 0.0
 # array to df
 data_df = pd.DataFrame(array)
 
-# iris dataset
+# iris dataset v1
+iris = datasets.load_iris()
+df = pd.DataFrame(iris.data, columns=iris.feature_names)
+df["target"] = iris.target
+df["species"] = iris.target_names[iris.target]
+print(df)
+
+# iris dataset v2
 iris = datasets.load_iris()
 
 df = pd.DataFrame(data= np.c_[iris["data"], iris["target"]],
@@ -24,7 +31,7 @@ df = pd.DataFrame(data= np.c_[iris["data"], iris["target"]],
 df["species"] = pd.Categorical.from_codes(iris.target, iris.target_names)
 print(df)
 
-# iris dataset v2
+# iris dataset v3
 iris = datasets.load_iris()
 data_df = pd.DataFrame(data=iris.data)
 data_df["species"] = pd.Categorical.from_codes(iris.target, iris.target_names)
