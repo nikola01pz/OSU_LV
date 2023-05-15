@@ -1,13 +1,24 @@
 # osu-lv
 Lab exercises for the basics of machine learning.
-
-LV1 - python osnove__
-LV2 - numpy, matplotlib, transponiranje (loadtxt), slike__
-LV3 - pandas, predobrada podataka (izbacivanje stupaca, uvjetovanje itd), mapiranje type->color, groupby, razliciti grafovi__
-LV4 - linearni regresijski model, scaler, oneHotEncoder, category->numerical values__
-LV5 - klasifikacija logistickom regresijom, theta, parametri regresije__
-LV6 - knn, svm, gridsearchcv (unakrsna validacija)__
-LV7 - k-means, kvantizacija boja__
-LV8 - neuronske mreže, slike, pogresne predikcije__
-LV9 - tenserflow, konvolucijski slojevi, primjena filtera__
+<br />
+Folder exams containts final tasks by date.
+<br />
+LV1 - python basics
+<br />
+LV2 - numpy, matplotlib libraries
+<br />
+LV3 - pandas library, data preprocessing, mapping type->color, groupby, graphs
+<br />
+LV4 - linear regression model, scaler, oneHotEncoder, category->numerical values
+<br />
+LV5 - logistic regression classification, theta
+<br />
+LV6 - knn, svm, gridsearchcv, cross validation
+<br />
+LV7 - k-means, color quantization
+<br />
+LV8 - neural networks, images
+<br />
+LV9 - tenserflow, convolutional layers, filter application
+<br />
 
